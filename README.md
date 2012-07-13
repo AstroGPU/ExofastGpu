@@ -1,10 +1,13 @@
-# ExofastGPU
-============
-*Library for GPU-accelerated transit light curve calculations*
+# ExofastGpu
+### Library for GPU-accelerated transit light curve calculations.
+
+For more information, see the [ExofastGpu wiki](https://github.com/AstroGPU/ExofastGPU/wiki)
 
 Features
 ========
-* High-performance code runs on CPU, multi-core CPUs or nVidia GPUs
+* Common algorithms for transit light curve modeling
+* High-performance code is one to two orders of magnitude faster on selected nVidia GPUs than a CPU core
+* Code also runs on CPUs without a GPU (either single or multi-core via OpenMP or TBB)
 * Routines easily accesible from C, C++, CUDA, and IDL
 
 *Warning*
@@ -12,17 +15,9 @@ Features
 These routines have _not_ been validated (yet).
 If you find bugs, validate a routine, or would like to contribute, please notify Eric Ford.
 
-Algorithms
-==========
-* Solve Kepler's Equation
-* Compute position of planet/star along Keplerian orbit
-* Compute stellar limb darkening models (uniform, quadratic, non-linear)
-* Convert time in target barycenter frame to barycentric dynamical time
-* Compute light curve model for Keplerian orbital parameters
-* Calculate \chi^2 between light curve model and data
 
-Acknowledgements
-================
+Acknowledgments
+===============
 It's not clear if/when there will be a publication about ExofastGpu.
 In the mean time, please cite:
 * Mandel, K. & E. Agol (2002) ApJ 580, L171-175. (doi:10.1086/345520)
@@ -32,9 +27,9 @@ In the mean time, please cite:
 
 Related Links
 =============
-* http://www.astro.washington.edu/users/agol/transit.html "Mandel & Agol code website"
-* http://astroutils.astronomy.ohio-state.edu/exofast/ "Exofast website"
-* http://www.astro.ufl.edu/~eford/ "Eric Ford's website"
-* http://thrust.github.com/ "Thrust website"
-* http://en.wikipedia.org/wiki/Comparison_of_Nvidia_graphics_processing_units#Tesla "Comparison of nVidia GPU Specifications"
+* [Mandel & Agol code website](http://www.astro.washington.edu/users/agol/transit.html)
+* [Exofast website](http://astroutils.astronomy.ohio-state.edu/exofast/)
+* [Eric Ford's website](http://www.astro.ufl.edu/~eford/)
+* [Thrust website] (http://thrust.github.com/)
+* [Comparison of nVidia GPU Specifications] (http://en.wikipedia.org/wiki/Comparison_of_Nvidia_graphics_processing_units#Tesla)
 
