@@ -22,8 +22,8 @@ It's not clear if/when there will be a publication about ExofastGpu.
 In the mean time, please cite:
 * Mandel, K. & E. Agol (2002) ApJ 580, L171-175. (doi:10.1086/345520)
 * Ford, E.B. 2009, New Astronomy, 14, 406-412.  (doi:10.1016/j.newast.2008.12.001) 
-* Dindar, S. et al. (2012), New Astronomy, in press. (arXiv:1208.1157)
-* Eastman, J. et al. (2012), submitted to PASP (arXiv:1206.5798)
+* Dindar, S. et al. (2013), New Astronomy, 23, 6-18. (arXiv:1208.1157)
+* Eastman, J. et al. (2013), PASP, 125, 83 (arXiv:1206.5798)
 
 
 Related Links
