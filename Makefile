@@ -9,8 +9,10 @@ GENCODE = -gencode arch=compute_20,\"code=sm_20,compute_20\"
 # If not using the GPU, can use OpenMP in place of GPU
 # GENCODE = -Xcompiler -fopenmp -DTHRUST_DEVICE_BACKEND=THRUST_DEVICE_BACKEND_OMP -lgomp -O3
 
-INCPATHS =  -I/scratch/eford/NVIDIA_GPU_Computing_SDK/C/common/inc/ -I. 
-LIBS = -L/scratch/eford/NVIDIA_GPU_Computing_SDK/C/lib -lcutil_x86_64 
+#INCPATHS =  -I/scratch/eford/NVIDIA_GPU_Computing_SDK/C/common/inc/ -I. 
+#LIBS = -L/scratch/eford/NVIDIA_GPU_Computing_SDK/C/lib -lcutil_x86_64 
+INCPATHS =  -I. -I/usr/global/cuda/4.1/cuda/include -I/usr/global/cuda/4.1/cuda/C/common/inc
+LIBS = -lcutil_x86_64  -L/usr/global/cuda/4.1/cuda/C/lib
 OPTS = -O
 IDLCMDS = -shared  --compiler-options ' -fPIC '
 
