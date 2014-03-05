@@ -1,8 +1,7 @@
-
 # Variables to set for local configuration
 # Compile just for Fermi-based GPUs
-# COMPILER = nvcc
-# GENCODE = -gencode arch=compute_20,\"code=sm_20,compute_20\"
+COMPILER = nvcc -DTHRUST_DEVICE_SYSTEM=THRUST_DEVICE_SYSTEM_CUDA
+GENCODE = -gencode arch=compute_20,\"code=sm_20,compute_20\"
 # For printing more info about memory requirements
 # GENCODE = -gencode arch=compute_20,\"code=sm_20,compute_20\" --ptxas-options=-v
 # Compile for either Fermi or GT200-based GPUs (gives lots of warning messages you can ignore)
@@ -10,13 +9,15 @@
 # If not using the GPU, can use OpenMP in place of GPU
 # GENCODE = -Xcompiler -fopenmp -DTHRUST_DEVICE_BACKEND=THRUST_DEVICE_BACKEND_OMP -lgomp 
 # If not using the GPU or CUDA, then can use gcc with OpenMP
-COMPILER = g++
-GENCODE = -fopenmp -DTHRUST_DEVICE_SYSTEM=THRUST_DEVICE_SYSTEM_OMP -lgomp
+# COMPILER = g++
+# GENCODE = -fopenmp -DTHRUST_DEVICE_SYSTEM=THRUST_DEVICE_SYSTEM_OMP -lgomp
 
 #INCPATHS =  -I/scratch/eford/NVIDIA_GPU_Computing_SDK/C/common/inc/ -I. 
-INCPATHS =  -I/home/ebf11/include
+#INCPATHS =  -I/home/ebf11/include
+INCPATHS =  -I. -I/usr/global/cuda/4.1/cuda/include -I/usr/global/cuda/4.1/cuda/C/common/inc
 #LIBS = -L/scratch/eford/NVIDIA_GPU_Computing_SDK/C/lib -lcutil_x86_64 
-LIBS = 
+LIBS = -lcutil_x86_64  -L/usr/global/cuda/4.1/cuda/C/lib
+#LIBS = 
 OPTS = -O3
 IDLCMDS = -shared  --compiler-options ' -fPIC '
 
@@ -28,6 +29,7 @@ idl:   exofast_cuda_idl.so
 
 clean: 
 	rm -f keplereq_test.exe occultquad_test.exe flux_model_test.exe exofast_cuda_*.so
+
 tarball:
 	tar czf exofast_cuda_xxx.tgz *.cu *.cuh  *.c *.cpp *.hpp *_test.pro Makefile
 
@@ -64,11 +66,6 @@ occultnl_c_wrapper.cpp: occultnl.cu
 flux_model_c_wrapper.cpp: occultquad.cu getb.cu keplereq.cu bjd.cu chisq.cu
 chisq_c_wrapper.cpp: chisq.cu
 
-# Library for accessing via C
-exofast_cuda_c.so: exofast_cuda_all_c_wrappers.cpp  flux_model_c_wrapper.cpp occultuniform_c_wrapper.cpp occultquad_c_wrapper.cpp occultnl_c_wrapper.cpp keplereq_c_wrapper.cpp getb_c_wrapper.cpp bjd_c_wrapper.cpp chisq_c_wrapper.cpp
-	$(COMPILER) exofast_cuda_all_c_wrappers.cpp $(GENCODE) $(INCPATHS) $(LIBS) $(OPTS) -c   -o exofast_cuda_c.so
-
-
 # IDL wrapper functions
 bjd_idl_wrapper.cu: bjd.cu
 keplereq_idl_wrapper.cu: keplereq.cu
@@ -79,7 +76,13 @@ occultnl_idl_wrapper.cu: occultnl.cu
 flux_model_idl_wrapper.cu: occultquad.cu getb.cu keplereq.cu bjd.cu chisq.cu
 chisq_idl_wrapper.cu: chisq.cu
 
+# Library for accessing via C
+exofast_cuda_c.so: exofast_cuda_all_c_wrappers.cpp  flux_model_c_wrapper.cpp occultuniform_c_wrapper.cpp occultquad_c_wrapper.cpp occultnl_c_wrapper.cpp keplereq_c_wrapper.cpp getb_c_wrapper.cpp bjd_c_wrapper.cpp chisq_c_wrapper.cpp
+	$(COMPILER) exofast_cuda_all_c_wrappers.cpp $(GENCODE) $(INCPATHS) $(LIBS) $(OPTS) -c   -o exofast_cuda_c.so
+
 # Library for accessing via IDL 
 exofast_cuda_idl.so: exofast_cuda_all_idl_wrappers.cu  flux_model_idl_wrapper.cu occultuniform_idl_wrapper.cu occultquad_idl_wrapper.cu occultnl_idl_wrapper.cu keplereq_idl_wrapper.cu getb_idl_wrapper.cu bjd_idl_wrapper.cu chisq_idl_wrapper.cu
 	$(COMPILER) exofast_cuda_all_idl_wrappers.cu $(GENCODE) $(INCPATHS) $(LIBS) $(OPTS) $(IDLCMDS)  -o exofast_cuda_idl.so
 
+test_c.so: test_c.c
+	gcc test_c.c -shared -fPIC -o test_c.so 

@@ -7,7 +7,7 @@
 #include <sstream>
 #include <cassert>
 
-#if 0 // THRUST_DEVICE_SYSTEM == THRUST_DEVICE_SYSTEM_CUDA
+#if 1 // THRUST_DEVICE_SYSTEM == THRUST_DEVICE_SYSTEM_CUDA
 #include <cuda.h>
 #include <cuda_runtime.h>
 #include <cutil.h>
