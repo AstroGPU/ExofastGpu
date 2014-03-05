@@ -1,0 +1,10 @@
+#include "keplereq_c_wrapper.cpp"
+#include "occultuniform_c_wrapper.cpp"
+#include "occultquad_c_wrapper.cpp"
+#include "occultnl_c_wrapper.cpp"
+#include "flux_model_c_wrapper.cpp"
+#include "chisq_c_wrapper.cpp"
+#include "getb_c_wrapper.cpp"
+#include "bjd_c_wrapper.cpp"
+// #include "test_c.c"
+
