@@ -25,7 +25,11 @@ struct get_xyz_functor : public thrust::unary_function< thrust::tuple<const doub
 	keplereq_functor solve_kepler;
 	double ecc_anom = solve_kepler(mean_anom,ecc);
 #if 1
+#if THRUST_DEVICE_SYSTEM == THRUST_DEVICE_SYSTEM_CUDA
 	double true_anom = 2.0*atan(rsqrt((1.-ecc)/(1.+ecc))*tan(0.5*ecc_anom));
+#else
+	double true_anom = 2.0*atan(sqrt((1.+ecc)/(1.-ecc))*tan(0.5*ecc_anom));
+#endif
 	double r = a_over_rstar*(1.-ecc*ecc)/(1.+ecc*cos(true_anom));
 	double cos_true_plus_omega, sin_true_plus_omega;
 	sincos(true_anom+omega,&sin_true_plus_omega,&cos_true_plus_omega);

@@ -27,7 +27,11 @@ struct target2bjd_functor : public thrust::unary_function< thrust::tuple<const d
 	keplereq_functor solve_kepler;
 	double ecc_anom = solve_kepler(mean_anom,ecc);
 #if 1
+#if THRUST_DEVICE_SYSTEM == THRUST_DEVICE_SYSTEM_CUDA
 	double true_anom = 2.0*atan(rsqrt((1.-ecc)/(1.+ecc))*tan(0.5*ecc_anom));
+#else
+	double true_anom = 2.0*atan(sqrt((1.+ecc)/(1.-ecc))*tan(0.5*ecc_anom));
+#endif
 	double r = a_in_au*(1.-ecc*ecc)/(1.+ecc*cos(true_anom));
 	double cos_true, sin_true;
 	sincos(true_anom,&sin_true,&cos_true);

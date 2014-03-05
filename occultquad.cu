@@ -67,8 +67,13 @@ struct occultquad_functor : public thrust::unary_function< thrust::tuple<double,
 #endif
       double m0 = 1.0;
       double c =1.0;
+#if THRUST_DEVICE_SYSTEM == THRUST_DEVICE_SYSTEM_CUDA
       double d = rsqrt(p);
-      p = 1.0/d;
+      p = 1.0/sqrt(p)
+#else
+      p = sqrt(p);
+      double d = 1.0/sqrt(p);
+#endif 
       double e = kc;
       do {
        double f = c;
@@ -170,7 +175,11 @@ struct occultquad_functor : public thrust::unary_function< thrust::tuple<double,
 	   }
 	 else if((p<1.)&&(z!=1.-p)&&(z!=0.)) // case 3, 9 (planet completely inside star)
 	   { 
+#if THRUST_DEVICE_SYSTEM == THRUST_DEVICE_SYSTEM_CUDA
 	   q = rsqrt((1.-x1)/(x2-x1)); 
+#else
+	   q = sqrt((x2-x1)/(1.-x1)); 
+#endif
 	   n = x2/x1-1.;
    	   compute_EkKk = true; compute_bs = true; 
 	   }
@@ -221,7 +230,11 @@ struct occultquad_functor : public thrust::unary_function< thrust::tuple<double,
 	   const double ellpic_bulrisch_n_q = ellpic_bulirsch(n,q);
 #endif
 	   const double x3 = p*p-z*z;
+#if THRUST_DEVICE_SYSTEM == THRUST_DEVICE_SYSTEM_CUDA
 	   lambdad = 1./(9.*M_PI)*rsqrt(p*z)*
+#else
+	   lambdad = 1./(9.*M_PI)/sqrt(p*z)*
+#endif
 	     ( ((1.-x2)*(2.*x2+x1-3.)-3.*x3*(x2-2.))*EkKk.get<1>()
 	     +4.*p*z*(z*z+7.*p*p-4.)*EkKk.get<0>()
 	     -3.*x3/x1*ellpic_bulrisch_n_q );
@@ -253,13 +266,21 @@ struct occultquad_functor : public thrust::unary_function< thrust::tuple<double,
 	     else  // case 3, 9
 	       {
 #if !GROUP_FUNC_CALLS
+#if THRUST_DEVICE_SYSTEM == THRUST_DEVICE_SYSTEM_CUDA
 	       double q = rsqrt((1.-x1)/(x2-x1));
+#else
+	       double q = sqrt((x2-x1)/(1.-x1));
+#endif
 	       thrust::tuple<double,double> EkKk = ellke(q);	   
 	       double n = x2/x1-1.;
 	       double ellpic_bulrisch_n_q = ellpic_bulirsch(n,q);
 #endif
 	       double x3 = p*p-z*z;
+#if THRUST_DEVICE_SYSTEM == THRUST_DEVICE_SYSTEM_CUDA
 	       lambdad = 2./(9.*M_PI)*rsqrt(1.-x1)*
+#else
+	       lambdad = 2./(9.*M_PI)/sqrt(1.-x1)*
+#endif
                        ( (1.-5.*z*z+p*p+x3*x3)*EkKk.get<1>()
 		         +(1.-x1)*(z*z+7.*p*p-4.)*EkKk.get<0>()
 			 -3.*x3/x1*ellpic_bulirsch(n,q) );

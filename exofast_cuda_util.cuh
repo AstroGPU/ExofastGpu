@@ -7,9 +7,11 @@
 #include <sstream>
 #include <cassert>
 
+#if 0 // THRUST_DEVICE_SYSTEM == THRUST_DEVICE_SYSTEM_CUDA
 #include <cuda.h>
 #include <cuda_runtime.h>
 #include <cutil.h>
+#endif
 
 #include <thrust/host_vector.h>
 #include <thrust/device_vector.h>
@@ -33,6 +35,16 @@
 
 // A bunch of junk to deal with querying GPU info
 namespace ebf {
+
+void sync()
+{
+#if THRUST_DEVICE_SYSTEM==THRUST_DEVICE_SYSTEM_CUDA
+	cudaThreadSynchronize();
+#endif
+}
+
+#if THRUST_DEVICE_SYSTEM==THRUST_DEVICE_SYSTEM_CUDA
+
 /**
         \brief Unrecoverable error exception.
 
@@ -71,9 +83,13 @@ struct cudaException : public ebf::runtime_error
 #define cudaErrCheck(expr) \
         cudaException::check(expr, __PRETTY_FUNCTION__, __FILE__, __LINE__)
 
+
+#endif
+
 // selects GPU to use and returns gpu ID or -1 if using CPU
 int init_cuda() 
 { 
+#if THRUST_DEVICE_SYSTEM == THRUST_DEVICE_SYSTEM_CUDA
     // Select the proper device
     const char* devstr = getenv("CUDA_DEVICE");
     const int env_dev = (devstr != NULL) ? atoi(devstr) : 0;
@@ -90,8 +106,14 @@ int init_cuda()
        	std::cerr << "# Cannot select the CUDA device. Using CPU!" << std::endl;
 	}
     return dev;
+#else
+    std::cerr << "# Compiled to not use a CUDA device. Using CPU!" << std::endl;
+    return -1;
+#endif
 }
 
+
+#if THRUST_DEVICE_SYSTEM==THRUST_DEVICE_SYSTEM_CUDA
 
 struct nonprofiled_wrapper_c_base
 {
@@ -164,7 +186,10 @@ struct profiled_wrapper_c_base
 	
 };
 
+#endif
+
 }
+
 
 
 // Should these be moved into a namespace?
